@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "ask": [
+      "Read(!C:\\Users\\cogni\\Desktop\\docapture-full/**)",
+      "Edit(!C:\\Users\\cogni\\Desktop\\docapture-full/**)"
+    ],
+    "allow": [
+      "Read(C:\\Users\\cogni\\Desktop\\docapture-full/**)",
+      "Edit(C:\\Users\\cogni\\Desktop\\docapture-full/**)"
+    ]
+  },
+  "memoryImport": {},
+  "monitoring": {}
+}

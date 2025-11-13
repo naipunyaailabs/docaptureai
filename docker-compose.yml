@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # Backend API Service
+  docextract-api:
+    build:
+      context: ./docextract-api
+      dockerfile: Dockerfile
+    container_name: docapture-api
+    restart: unless-stopped
+    environment:
+      PORT: 5000
+      MONGODB_URI: ${MONGODB_URI}
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      API_KEY: ${API_KEY}
+      SMTP_HOST: ${SMTP_HOST:-smtp.example.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-your-smtp-username}
+      SMTP_PASS: ${SMTP_PASS:-your-smtp-password}
+      SMTP_FROM: ${SMTP_FROM:-"Docapture" <admin@docapture.com>}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      NODE_ENV: production
+    ports:
+      - "5000:5000"
+    networks:
+      - docapture-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      - api_uploads:/app/uploads
+
+  # Frontend UI Service
+  docapture-ui:
+    build:
+      context: ./docapture-ui
+      dockerfile: Dockerfile.dev
+    container_name: docapture-ui
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_APP_NAME: ${NEXT_PUBLIC_APP_NAME:-docapture Pro}
+      NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:-https://docapture.com}
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:5000}
+      NEXT_PUBLIC_AUTH_API_BASE_URL: ${NEXT_PUBLIC_AUTH_API_BASE_URL:-http://localhost:5000}
+      NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL:-http://localhost:5000}
+      NEXT_PUBLIC_API_KEY: ${API_KEY}
+      NEXT_PUBLIC_SUPPORT_EMAIL: ${NEXT_PUBLIC_SUPPORT_EMAIL:-support@docapture.com}
+      NEXT_PUBLIC_MAX_UPLOAD_SIZE: ${NEXT_PUBLIC_MAX_UPLOAD_SIZE:-100}
+      NEXT_PUBLIC_DEFAULT_THEME: ${NEXT_PUBLIC_DEFAULT_THEME:-system}
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
+    depends_on:
+      - docextract-api
+    networks:
+      - docapture-network
+    volumes:
+      - ./docapture-ui:/app
+      - /app/node_modules
+
+networks:
+  docapture-network:
+    driver: bridge
+    name: docapture-network
+
+volumes:
+  api_uploads:
+    name: docapture-api-uploads

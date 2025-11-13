@@ -1,0 +1,82 @@
+# Docker Compose Production Deployment
+# Use this configuration for production environments without Nginx
+
+version: '3.8'
+
+services:
+  # Backend API Service
+  docextract-api:
+    build:
+      context: ./docextract-api
+      dockerfile: Dockerfile
+    container_name: docapture-api-prod
+    restart: always
+    environment:
+      PORT: 5000
+      MONGODB_URI: ${MONGODB_URI}
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      API_KEY: ${API_KEY}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_SECURE: ${SMTP_SECURE}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      SMTP_FROM: ${SMTP_FROM}
+      FRONTEND_URL: ${FRONTEND_URL}
+      NODE_ENV: production
+    ports:
+      - "5000:5000"
+    networks:
+      - docapture-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      - api_uploads:/app/uploads
+      - api_logs:/app/logs
+
+  # Frontend UI Service
+  docapture-ui:
+    build:
+      context: ./docapture-ui
+      dockerfile: Dockerfile
+    container_name: docapture-ui-prod
+    restart: always
+    environment:
+      NEXT_PUBLIC_APP_NAME: ${NEXT_PUBLIC_APP_NAME}
+      NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL}
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+      NEXT_PUBLIC_AUTH_API_BASE_URL: ${NEXT_PUBLIC_AUTH_API_BASE_URL}
+      NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL}
+      NEXT_PUBLIC_API_KEY: ${API_KEY}
+      NEXT_PUBLIC_SUPPORT_EMAIL: ${NEXT_PUBLIC_SUPPORT_EMAIL}
+      NEXT_PUBLIC_MAX_UPLOAD_SIZE: ${NEXT_PUBLIC_MAX_UPLOAD_SIZE}
+      NEXT_PUBLIC_DEFAULT_THEME: ${NEXT_PUBLIC_DEFAULT_THEME}
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      docextract-api:
+        condition: service_healthy
+    networks:
+      - docapture-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+networks:
+  docapture-network:
+    driver: bridge
+    name: docapture-network-prod
+
+volumes:
+  api_uploads:
+    name: docapture-api-uploads-prod
+  api_logs:
+    name: docapture-api-logs-prod

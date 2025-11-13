@@ -1,0 +1,1 @@
+This is a test document with minimal content to test the field extraction functionality.
