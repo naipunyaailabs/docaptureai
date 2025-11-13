@@ -1,9 +1,9 @@
 export const config = {
   appName: process.env.NEXT_PUBLIC_APP_NAME || "docapture Pro",
   baseUrl: process.env.NEXT_PUBLIC_BASE_URL || "https://docapture.com",
-  apiBaseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || "https://docapture.com",
-  authApiBaseUrl: process.env.NEXT_PUBLIC_AUTH_API_BASE_URL || "https://docapture.com",
-  apiKey: process.env.NEXT_PUBLIC_API_KEY || "YOUR_API_KEY_HERE", // Add API key
+  apiBaseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000",
+  authApiBaseUrl: process.env.NEXT_PUBLIC_AUTH_API_BASE_URL || "http://localhost:5000",
+  apiKey: process.env.NEXT_PUBLIC_API_KEY || "9bRgWiCIzXStqWs7azssmqEQ", // Add API key
   supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "support@docapture.com",
   maxUploadSize: parseInt(process.env.NEXT_PUBLIC_MAX_UPLOAD_SIZE || '10'), // MB
   defaultTheme: (process.env.NEXT_PUBLIC_DEFAULT_THEME || 'system') as "light" | "dark" | "system",
