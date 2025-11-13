@@ -36,9 +36,14 @@ DatabaseService.connect().catch(err => {
 const projectHtml = readFileSync(join(__dirname, 'project.html'), 'utf-8');
 
 const addCors = (response: Response) => {
-  response.headers.set("Access-Control-Allow-Origin", "*");
-  response.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Accept");
+  // Get the frontend URL from environment variables
+  const frontendUrl = process.env.FRONTEND_URL || "https://docapture.com";
+  
+  // Set CORS headers
+  response.headers.set("Access-Control-Allow-Origin", frontendUrl);
+  response.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+  response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Accept, X-API-Key");
+  response.headers.set("Access-Control-Allow-Credentials", "true");
   response.headers.set("Access-Control-Max-Age", "86400"); // 24 hours
   return response;
 };
