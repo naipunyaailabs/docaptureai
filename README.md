@@ -11,6 +11,13 @@ Docapture is a document processing platform that leverages AI to extract, analyz
 - Batch document processing
 - Dynamic UI generation for various document types
 
+## Security Notice
+
+**Important**: This repository has been cleaned to remove all sensitive information. 
+- All API keys, passwords, and secrets have been replaced with placeholder values
+- Environment files (`.env`, `.env.docker`, `.env.production`) are ignored via `.gitignore`
+- Docker Compose files use environment variable references instead of hardcoded values
+
 ## Getting Started
 
 ### Prerequisites
@@ -22,7 +29,7 @@ Docapture is a document processing platform that leverages AI to extract, analyz
 ### Installation
 
 1. Clone the repository
-2. Copy `.env.docker` to `.env` and configure your environment variables
+2. Copy `.env.docker` to `.env` and configure your environment variables with your actual values
 3. Run `docker-compose up -d` to start the services
 4. Access the application at `http://localhost:3000`
 

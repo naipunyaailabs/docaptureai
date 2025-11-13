@@ -21,8 +21,6 @@ services:
       SMTP_FROM: ${SMTP_FROM:-"Docapture" <admin@docapture.com>}
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
       NODE_ENV: production
-    ports:
-      - "5000:5000"
     networks:
       - docapture-network
     healthcheck:
@@ -53,21 +51,11 @@ services:
       NEXT_PUBLIC_DEFAULT_THEME: ${NEXT_PUBLIC_DEFAULT_THEME:-system}
       GROQ_API_KEY: ${GROQ_API_KEY}
       NODE_ENV: development
-    ports:
-      - "3000:3000"
     depends_on:
       - docextract-api
-    networks:
-      - docapture-network
     volumes:
       - ./docapture-ui:/app
       - /app/node_modules
-
-networks:
-  docapture-network:
-    driver: bridge
-    name: docapture-network
-
 volumes:
   api_uploads:
     name: docapture-api-uploads
